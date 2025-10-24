@@ -404,13 +404,3 @@ This project is open source and available under the [MIT License](LICENSE).
 - **Node.js Community**: For excellent packages and resources
 
 ---
-
-## 📞 Contact
-
-For questions, suggestions, or feedback:
-- **GitHub**: [@YOUR_USERNAME](https://github.com/YOUR_USERNAME)
-- **Issues**: [Project Issues](https://github.com/YOUR_USERNAME/product-crud-api/issues)
-
----
-
-*Built with ❤️ using Node.js, Express, and MongoDB - demonstrating clean architecture and professional API development practices.*
