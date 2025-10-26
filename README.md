@@ -149,9 +149,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 Built with [Express.js](https://expressjs.com/), [MongoDB](https://www.mongodb.com/), and [Mongoose](https://mongoosejs.com/)
-
----
-
-<div align="center">
-  Made with ❤️ by <a href="https://github.com/YOUR_USERNAME">Your Name</a>
-</div>
