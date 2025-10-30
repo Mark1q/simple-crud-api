@@ -1,6 +1,7 @@
 const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-const cors = require('cors')
 const config = require('./config.js')
 
 const productRoute = require('./routes/product.route.js')
@@ -12,14 +13,14 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(cookieParser());
 
 // routes
 
 app.use('/api/products', productRoute);
-app.use('/api/auth', authRoute)
+app.use('/api/auth', authRoute);
 
-mongoose.connect(`mongodb+srv://markszeibert_db_user:${config.MONGODB_PASSWORD}@cluster0.chhz4jc.mongodb.net/Node-API?retryWrites=true&w=majority&appName=Cluster0`)
+mongoose.connect(config.MONGO_URI)
 .then(() => {
     console.log("Connected to the database succesfully!");
     app.listen(config.PORT, () => {
