@@ -1,6 +1,6 @@
 # Product CRUD API with Authentication
 
-> A secure and modern RESTful API built with Express.js and MongoDB, featuring JWT authentication and role-based access control. Perfect starter template for building scalable Node.js backends.
+> A secure and modern RESTful API built with Express.js and MongoDB, featuring JWT authentication, role-based access control, and comprehensive request validation. Perfect starter template for building scalable Node.js backends.
 
 [![Node.js](https://img.shields.io/badge/Node.js-v14+-green.svg)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-v4.x-blue.svg)](https://expressjs.com/)
@@ -11,6 +11,7 @@
 
 - 🔐 **JWT Authentication** with access & refresh tokens
 - 👥 **Role-Based Authorization** (admin, user)
+- ✅ **Request Validation** with Joi schemas
 - 📦 Full CRUD operations for products
 - 🎯 MVC architecture with clean separation of concerns
 - 🛡️ Comprehensive error handling
@@ -90,6 +91,12 @@ curl -X POST http://localhost:5000/api/auth \
   }'
 ```
 
+**Validation Rules:**
+- Name: 3-100 characters
+- Email: Valid email format
+- Password: Min 8 characters, must contain uppercase, lowercase, number, and special character
+- Role: Must be "user" or "admin"
+
 #### Login
 ```bash
 curl -X POST http://localhost:5000/api/auth/login \
@@ -112,6 +119,28 @@ curl -X POST http://localhost:5000/api/products \
     "image": "https://example.com/laptop.jpg"
   }'
 ```
+
+**Validation Rules:**
+- Name: 3-100 characters, required
+- Price: Positive number, required
+- Quantity: Non-negative integer, defaults to 0
+- Image: Valid URI format, optional
+
+#### Update a Product (Requires User Auth)
+```bash
+curl -X PUT http://localhost:5000/api/products/671a9b8c4bfa48a59f5cd234 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -d '{
+    "price": 899.99,
+    "quantity": 20
+  }'
+```
+
+**Validation Rules:**
+- All fields optional
+- At least one field must be provided
+- Same validation rules as creation for provided fields
 
 ### Example Responses
 
@@ -136,6 +165,17 @@ curl -X POST http://localhost:5000/api/products \
 }
 ```
 
+#### Validation Error Response
+```json
+{
+  "error": "Validation failed",
+  "details": [
+    "password must contain uppercase, lowercase, number and special character",
+    "email must be a valid email"
+  ]
+}
+```
+
 ## 📁 Project Structure
 
 ```
@@ -145,13 +185,17 @@ product-crud-api/
 │   └── product.controller.js    # Product business logic
 ├── middleware/
 │   ├── authentication.js        # JWT verification
-│   └── authorize.js             # Role-based access control
+│   ├── authorize.js             # Role-based access control
+│   └── validation.js            # Request validation middleware
 ├── models/
 │   ├── user.model.js            # User schema with validation
 │   └── product.model.js         # Product schema
 ├── routes/
 │   ├── auth.route.js            # Auth routes
 │   └── product.route.js         # Product routes
+├── validations/
+│   ├── auth.validation.js       # Joi schemas for auth
+│   └── product.validation.js    # Joi schemas for products
 ├── utils/
 │   ├── cookie.js                # Cookie configuration
 │   └── tokens.js                # Token expiration settings
@@ -206,14 +250,31 @@ NODE_ENV=development
 4. **Token Refresh**: When access token expires, use refresh endpoint to get new access token
 5. **Logout**: Clears refresh token cookie
 
+## ✅ Request Validation
+
+All input is validated using Joi schemas before reaching controllers:
+
+### Registration Validation
+- **Name**: 3-100 characters
+- **Email**: Valid email format
+- **Password**: Minimum 8 characters with uppercase, lowercase, number, and special character
+- **Role**: Must be 'user' or 'admin'
+
+### Product Validation
+- **Create**: Name (required, 3-100 chars), Price (required, positive), Quantity (optional, non-negative), Image (optional, valid URI)
+- **Update**: At least one field required, all fields optional, same rules as creation
+
+Validation errors return helpful 400 responses with specific error messages.
+
 ## 🛡️ Security Features
 
 - Passwords hashed with bcrypt (10 salt rounds)
 - JWT tokens for stateless authentication
 - HTTP-only cookies for refresh tokens
-- Strong password validation (validator.js)
+- Strong password validation (validator.js + Joi)
 - Email validation
 - Role-based access control
+- Input sanitization and validation with Joi
 - Environment-based security (secure cookies in production)
 
 ## 🛠️ Tech Stack
@@ -221,7 +282,7 @@ NODE_ENV=development
 - **Backend:** Node.js, Express.js
 - **Database:** MongoDB Atlas, Mongoose ODM
 - **Authentication:** JWT (jsonwebtoken), bcrypt
-- **Validation:** validator.js
+- **Validation:** Joi, validator.js
 - **Config:** dotenv, envalid
 - **Architecture:** MVC Pattern
 
@@ -229,7 +290,7 @@ NODE_ENV=development
 
 - [x] JWT authentication & authorization
 - [x] Role-based access control
-- [ ] Request validation with Joi
+- [x] Request validation with Joi
 - [ ] Pagination & filtering
 - [ ] Image upload (Cloudinary/S3)
 - [ ] Rate limiting
