@@ -7,4 +7,6 @@ const createProductSchema = Joi.object({
   image: Joi.string().uri().optional()
 });
 
-module.exports = createProductSchema;
+module.exports = {
+  createProductSchema
+}
