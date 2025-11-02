@@ -56,41 +56,61 @@ The API will be running at `http://localhost:5000`
 | `PUT` | `/api/products/:id` | Update product | Yes | User |
 | `DELETE` | `/api/products/:id` | Delete product | Yes | Admin |
 
-## 💡 Example Requests
+## 💡 Example Requests & Responses
 
-**Register a User**
+### Register & Login
 ```bash
-curl -X POST http://localhost:5000/api/auth \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "John Doe",
-    "email": "john@example.com",
-    "password": "StrongPass123!",
-    "role": "user"
-  }'
+POST /api/auth
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "StrongPass123!",
+  "role": "user"
+}
 ```
 
-**Login**
 ```bash
-curl -X POST http://localhost:5000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "john@example.com",
-    "password": "StrongPass123!"
-  }'
+POST /api/auth/login
+{
+  "email": "john@example.com",
+  "password": "StrongPass123!"
+}
 ```
 
-**Create a Product** (Requires Admin Auth)
+**Login Response:**
+```json
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+### Products
 ```bash
-curl -X POST http://localhost:5000/api/products \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
-  -d '{
-    "name": "Laptop",
-    "quantity": 15,
-    "price": 999.99,
-    "image": "https://example.com/laptop.jpg"
-  }'
+# Get all products
+GET /api/products
+
+# Create product (Admin only)
+POST /api/products
+Authorization: Bearer YOUR_ACCESS_TOKEN
+{
+  "name": "Laptop",
+  "quantity": 15,
+  "price": 999.99,
+  "image": "https://example.com/laptop.jpg"
+}
+```
+
+**Product Response:**
+```json
+{
+  "_id": "671a9b8c4bfa48a59f5cd234",
+  "name": "Laptop",
+  "quantity": 15,
+  "price": 999.99,
+  "image": "https://example.com/laptop.jpg",
+  "createdAt": "2025-10-24T10:30:00.000Z",
+  "updatedAt": "2025-10-24T10:30:00.000Z"
+}
 ```
 
 ## 📁 Project Structure
