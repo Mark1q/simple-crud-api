@@ -4,7 +4,7 @@ const { getProducts, getProduct, createProduct, updateProduct, deleteProduct } =
 const { auth } = require('../middleware/authentication.js');
 const { authorize } = require('../middleware/authorize.js');
 const { validate } = require('./../middleware/validate.js');
-const { createProductSchema } = require('./../validations/product.validation.js');
+const { createProductSchema, updateProductSchema } = require('./../validations/product.validation.js');
 
 
 router.get('/', getProducts);
@@ -14,7 +14,7 @@ router.post('/', auth, authorize('admin'), validate(createProductSchema),  creat
 
 // update a product
 
-router.put('/:id', auth, authorize('user'), updateProduct);
+router.put('/:id', auth, authorize('user'), validate(updateProductSchema), updateProduct);
 
 // delete a product
 
