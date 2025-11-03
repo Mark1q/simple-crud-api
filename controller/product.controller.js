@@ -2,8 +2,17 @@ const Product = require('../models/product.model.js')
 
 const getProducts = async (req, res) => {
     try {
-        const products = await Product.find();
-        res.status(200).send(products);
+        const { page, limit, skip } = req.pagination;
+
+        const products = await Product.find().skip(skip).limit(limit);
+        const total = await Product.countDocuments();
+
+        res.status(200).json({
+            total,
+            page,
+            pages: Math.ceil(total / limit),
+            data: products
+        });
     } catch (error) {
         res.status(500).send({message: error.message});
     }
