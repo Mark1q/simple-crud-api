@@ -1,6 +1,6 @@
 const { DEFAULT_PAGE, DEFAULT_LIMIT, MAX_LIMIT } = require('../utils/pagination');
 
-function paginate(options = {}) {
+const paginate = (options = {}) => {
   const defaultPage = options.defaultPage || DEFAULT_PAGE;
   const defaultLimit = options.defaultLimit || DEFAULT_LIMIT;
   const maxLimit = options.maxLimit || MAX_LIMIT;
