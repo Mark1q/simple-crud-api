@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { getProducts, getProduct, createProduct, updateProduct, deleteProduct } = require('../controller/product.controller.js');
-const { auth } = require('../middleware/authentication.js');
+const { auth } = require('../middleware/authenticate.js');
 const { authorize } = require('../middleware/authorize.js');
 const { validate } = require('./../middleware/validate.js');
+const { paginate } = require('./../middleware/paginate.js');
 const { createProductSchema, updateProductSchema } = require('./../validations/product.validation.js');
 
 
-router.get('/', getProducts);
+
+router.get('/', paginate(), getProducts);
 router.get('/:id', getProduct);
 
 router.post('/', auth, authorize('admin'), validate(createProductSchema),  createProduct);
