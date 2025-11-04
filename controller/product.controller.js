@@ -3,8 +3,16 @@ const Product = require('../models/product.model.js')
 const getProducts = async (req, res) => {
     try {
         const { page, limit, skip } = req.pagination;
+        const { search } = req.query;
 
-        const products = await Product.find().skip(skip).limit(limit);
+        const filter = {
+            name: {
+                $regex: search,
+                $options: 'i'
+            }
+        }
+
+        const products = await Product.find(filter).skip(skip).limit(limit);
         const total = await Product.countDocuments();
 
         res.status(200).json({
