@@ -8,7 +8,6 @@ const { paginate } = require('./../middleware/paginate.js');
 const { createProductSchema, updateProductSchema } = require('./../validations/product.validation.js');
 
 
-
 router.get('/', paginate(), getProducts);
 router.get('/:id', getProduct);
 
