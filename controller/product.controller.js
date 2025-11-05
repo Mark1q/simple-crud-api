@@ -1,18 +1,33 @@
 const Product = require('../models/product.model.js')
+const { validateSortQueries } = require('../utils/queryHelper.js')
 
 const getProducts = async (req, res) => {
     try {
         const { page, limit, skip } = req.pagination;
-        const { search } = req.query;
+        const { search, minPrice, maxPrice, inStock } = req.query;
 
         const filter = {
-            name: {
-                $regex: search,
-                $options: 'i'
-            }
-        }
-
-        const products = await Product.find(filter).skip(skip).limit(limit);
+            ...(inStock && {
+                quantity: {
+                    $gt: 0 // in stock
+                },
+            }),
+            ...(search && {
+                name: {
+                    $regex: search, 
+                    $options: 'i' // case insensitive
+                }
+            }),
+            ...((minPrice || maxPrice) && { 
+                price: {
+                    ...(minPrice && { $gte: Number(minPrice) }),
+                    ...(maxPrice && { $lte: Number(maxPrice) }),
+                }
+            }),
+        };
+        
+        const sort = validateSortQueries(req.query);
+        const products = await Product.find(filter).skip(skip).limit(limit).sort(sort);
         const total = await Product.countDocuments();
 
         res.status(200).json({
